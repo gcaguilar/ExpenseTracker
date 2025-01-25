@@ -2,12 +2,22 @@ import { CategoryWithKeywords } from "@/types/Category";
 import { useLoaderData } from "@tanstack/react-router";
 import React from "react";
 import CategoryForm from "./components/CategoryForm";
-import { updateCategory } from "@/services/categoryService";
-
+import useCategoryForm from "@/hooks/useCategoryForm";
+import { MinimalKeyword } from "@/types/Keyword";
 const EditOrDeleteCategory: React.FC = () => {
-  const loaderData = useLoaderData<CategoryWithKeywords[]>({ from: "/categories/$categoryId" });
+  const { categories, keywords } = useLoaderData<{
+    categories: CategoryWithKeywords[];
+    keywords: MinimalKeyword[];
+  }>({ from: "/categories/$categoryId" });
 
-  return <CategoryForm category={loaderData} onSubmit={updateCategory} />;
+  const { onUpdateSubmit } = useCategoryForm(keywords, categories);
+  return (
+    <CategoryForm
+      category={categories}
+      keywords={keywords}
+      onSubmit={onUpdateSubmit}
+    />
+  );
 };
 
 export default EditOrDeleteCategory;

@@ -2,22 +2,13 @@ import React from "react";
 import { Category } from "@/types/Category";
 import { ColumnDef } from "@tanstack/react-table";
 import { ActionsCell } from "@/components/ActionsCell";
-
-const handleEdit = (id: string) => {
-  // Lógica para editar la categoría con el ID proporcionado
-  console.log(`Edit category with ID: ${id}`);
-};
-
-const handleDelete = (id: string) => {
-  // Lógica para eliminar la categoría con el ID proporcionado
-  console.log(`Delete category with ID: ${id}`);
-};
+import { useNavigate } from "@tanstack/react-router";
 
 export const columns: ColumnDef<Category>[] = [
   {
     accessorKey: "id",
-    header: () => null,
-    cell: () => null,
+    header: () => <div className="text-right">ID</div>,
+    cell: ({ row }) => <div>{row.getValue("id")}</div>,
   },
   {
     accessorKey: "name",
@@ -27,12 +18,27 @@ export const columns: ColumnDef<Category>[] = [
   {
     accessorKey: "Actions",
     header: () => null,
-    cell: ({ row }) => (
-      <ActionsCell 
-        row={row} 
-        onEdit={handleEdit} 
-        onDelete={handleDelete} 
-      />
-    ),
+    cell: ({ row }) => {
+      const navigate = useNavigate();
+      const handleEdit = (categoryId: string) => {
+        navigate({
+          to: `/categories/${categoryId}`,
+        });
+      };
+
+      const handleDelete = (categoryId: string) => {
+        // Lógica para eliminar la categoría
+        // Utilizar categoryId para eliminar la categoría
+      };
+
+      return (
+        <ActionsCell 
+          row={row} 
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      );
+    },
   },
 ];
+

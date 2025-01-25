@@ -5,9 +5,11 @@ import { Category } from "@/types/Category";
 import { useLoaderData } from "@tanstack/react-router";
 
 const Overview: React.FC = () => {
-  const loaderData = useLoaderData<Category[]>({ from: "/categories/" });
+   const { categories } = useLoaderData<{
+    categories: Category[];
+  }>({ from: "/categories/" });
 
-  return <DataTable columns={columns} data={loaderData} />;
+  return <DataTable columns={columns} data={categories} />;
 };
 
 export default Overview;

@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as ExpensesIndexImport } from './routes/expenses/index'
 import { Route as CategoriesIndexImport } from './routes/categories/index'
 import { Route as ExpensesExpenseIdImport } from './routes/expenses/$expenseId'
+import { Route as CategoriesNewImport } from './routes/categories/new'
 import { Route as CategoriesCategoryIdImport } from './routes/categories/$categoryId'
 
 // Create Virtual Routes
@@ -48,6 +49,12 @@ const ExpensesExpenseIdRoute = ExpensesExpenseIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CategoriesNewRoute = CategoriesNewImport.update({
+  id: '/categories/new',
+  path: '/categories/new',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const CategoriesCategoryIdRoute = CategoriesCategoryIdImport.update({
   id: '/categories/$categoryId',
   path: '/categories/$categoryId',
@@ -70,6 +77,13 @@ declare module '@tanstack/react-router' {
       path: '/categories/$categoryId'
       fullPath: '/categories/$categoryId'
       preLoaderRoute: typeof CategoriesCategoryIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/categories/new': {
+      id: '/categories/new'
+      path: '/categories/new'
+      fullPath: '/categories/new'
+      preLoaderRoute: typeof CategoriesNewImport
       parentRoute: typeof rootRoute
     }
     '/expenses/$expenseId': {
@@ -101,6 +115,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
+  '/categories/new': typeof CategoriesNewRoute
   '/expenses/$expenseId': typeof ExpensesExpenseIdRoute
   '/categories': typeof CategoriesIndexRoute
   '/expenses': typeof ExpensesIndexRoute
@@ -109,6 +124,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
+  '/categories/new': typeof CategoriesNewRoute
   '/expenses/$expenseId': typeof ExpensesExpenseIdRoute
   '/categories': typeof CategoriesIndexRoute
   '/expenses': typeof ExpensesIndexRoute
@@ -118,6 +134,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
   '/categories/$categoryId': typeof CategoriesCategoryIdRoute
+  '/categories/new': typeof CategoriesNewRoute
   '/expenses/$expenseId': typeof ExpensesExpenseIdRoute
   '/categories/': typeof CategoriesIndexRoute
   '/expenses/': typeof ExpensesIndexRoute
@@ -128,6 +145,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/categories/$categoryId'
+    | '/categories/new'
     | '/expenses/$expenseId'
     | '/categories'
     | '/expenses'
@@ -135,6 +153,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/categories/$categoryId'
+    | '/categories/new'
     | '/expenses/$expenseId'
     | '/categories'
     | '/expenses'
@@ -142,6 +161,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/categories/$categoryId'
+    | '/categories/new'
     | '/expenses/$expenseId'
     | '/categories/'
     | '/expenses/'
@@ -151,6 +171,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
   CategoriesCategoryIdRoute: typeof CategoriesCategoryIdRoute
+  CategoriesNewRoute: typeof CategoriesNewRoute
   ExpensesExpenseIdRoute: typeof ExpensesExpenseIdRoute
   CategoriesIndexRoute: typeof CategoriesIndexRoute
   ExpensesIndexRoute: typeof ExpensesIndexRoute
@@ -159,6 +180,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
   CategoriesCategoryIdRoute: CategoriesCategoryIdRoute,
+  CategoriesNewRoute: CategoriesNewRoute,
   ExpensesExpenseIdRoute: ExpensesExpenseIdRoute,
   CategoriesIndexRoute: CategoriesIndexRoute,
   ExpensesIndexRoute: ExpensesIndexRoute,
@@ -176,6 +198,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/categories/$categoryId",
+        "/categories/new",
         "/expenses/$expenseId",
         "/categories/",
         "/expenses/"
@@ -186,6 +209,9 @@ export const routeTree = rootRoute
     },
     "/categories/$categoryId": {
       "filePath": "categories/$categoryId.tsx"
+    },
+    "/categories/new": {
+      "filePath": "categories/new.tsx"
     },
     "/expenses/$expenseId": {
       "filePath": "expenses/$expenseId.tsx"

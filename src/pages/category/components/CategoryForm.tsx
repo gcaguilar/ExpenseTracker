@@ -3,35 +3,40 @@ import { CategoryWithKeywords } from "@/types/Category";
 import { FormField } from "@/components/ui/form";
 import { Form } from "@/components/ui/form";
 import FormInputField from "@/components/FormInputField";
-import { singleExpenseSchema } from "@/pages/expense/schemaValidation";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import MultiSelector, {
+  Option as MultiSelectorOption,
+} from "@/components/ui/multiselector";
+import useCategoryForm from "@/hooks/useCategoryForm";
+import { Keyword } from "@/types/Keyword";
+
+export const optionSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  disable: z.boolean().optional(),
+});
+
+export const categorySchema = z.object({
+  id: z.number(),
+  title: z.string().min(1, { message: "El nombre es requerido" }),
+  associatedKeywords: z
+    .array(optionSchema)
+    .min(1, { message: "Las palabras clave son requeridas" }),
+});
 
 interface CategoryFormProps {
-  category: CategoryWithKeywords;
-  onSubmit: (values: z.infer<typeof singleExpenseSchema>) => void;
+  keywords: Keyword[];
+  category?: CategoryWithKeywords;
+  onSubmit: (values: z.infer<typeof categorySchema>) => void;
 }
 
-const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit }) => {
-  const categorySchema = z.object({
-    id: z.number(),
-    title: z.string().min(1, { message: "El nombre es requerido" }),
-    associatedNames: z
-      .string()
-      .min(1, { message: "Las palabras clave son requeridas" }),
-  });
-
-  const form = useForm<z.infer<typeof categorySchema>>({
-    resolver: zodResolver(categorySchema),
-    defaultValues: {
-      id: category.id,
-      title: category.name,
-      associatedNames: category.associatedNames.join(","),
-    },
-  });
+const CategoryForm: React.FC<CategoryFormProps> = ({
+  keywords,
+  category,
+  onSubmit,
+}) => {
+  const { form, keywordsOptions } = useCategoryForm(keywords, category);
 
   return (
     <Form {...form}>
@@ -48,9 +53,22 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onSubmit }) => {
             />
           )}
         />
-        <Textarea
-          placeholder={form.getValues("associatedNames")}
-          {...form.register("associatedNames")}
+        <FormField
+          control={form.control}
+          name={`associatedKeywords`}
+          render={({ field: { value, ...rest } }) => (
+            <MultiSelector
+              {...rest}
+              value={value as MultiSelectorOption[]}
+              options={keywordsOptions}
+              placeholder="Selecciona palabras clave"
+              emptyIndicator={
+                <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                  no results found.
+                </p>
+              }
+            />
+          )}
         />
         <Button type="submit">Guardar</Button>
       </form>
